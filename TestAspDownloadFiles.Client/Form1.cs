@@ -92,26 +92,32 @@ namespace TestAspDownloadFiles.Client
             int read;
 
             var stopWatch = Stopwatch.StartNew();
+            DateTime lastTime = DateTime.Now;
 
             while ((read = await contentStream.ReadAsync(buffer)) > 0)
             {
                 await fileStream.WriteAsync(buffer.AsMemory(0, read));
                 totalRead += read;
 
-                int progress = totalBytes > 0
-                    ? (int)(totalRead * 100 / totalBytes) : 0;
-                progressBar1.Value = progress;
+                if ((DateTime.Now - lastTime).TotalMilliseconds > 100)
+                {
+                    int progress = totalBytes > 0
+                        ? (int)(totalRead * 100 / totalBytes) : 0;
 
-                int speedKb = (int)(totalRead / 1024d / stopWatch.Elapsed.TotalSeconds);
+                    ProgressbarInstantValue(progressBar1, progress);
 
-                labelDownloadProgress.Text = $"—качано {(int)(totalRead / 1024)}  б из {(int)(totalBytes / 1024)}  б\n{speedKb}  б/сек";
-                Application.DoEvents();
+                    int speedKb = (int)(totalRead / 1024d / stopWatch.Elapsed.TotalSeconds);
+
+                    labelDownloadProgress.Text = $"—качано {(int)(totalRead / 1024)}  б из {(int)(totalBytes / 1024)}  б\n{speedKb}  б/сек";
+                    lastTime = DateTime.Now;
+                }
             }
 
             stopWatch.Stop();
             labelDownloadProgress.Text += "... «авершено!";
             labelSavedFilePath.Text = lastDownloadedFile;
             buttonOpenFolder.Enabled = true;
+            ProgressbarInstantValue(progressBar1, 100);
         }
 
         private void buttonOpenFolder_Click(object sender, EventArgs e)
@@ -128,6 +134,25 @@ namespace TestAspDownloadFiles.Client
                 url += "/";
             _client = new HttpClient() { BaseAddress = new Uri(url) };
             buttonGetFiles.Enabled = true;
+        }
+
+        private void ProgressbarInstantValue(ProgressBar pb, int value)
+        {
+            int valPlus1 = value + 1;
+
+            if (value == pb.Maximum)
+            {
+                pb.Maximum = value + 1;
+                pb.Value = value + 1;
+                pb.Maximum = value;
+                pb.Value = value;
+            }
+            else
+            {
+                pb.Value = valPlus1;
+                pb.Value = value;
+
+            }
         }
     }
 }
