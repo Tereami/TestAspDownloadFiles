@@ -16,4 +16,8 @@
 		</Content>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\TestAspDownloadFiles.Models\TestAspDownloadFiles.Models.csproj" />
+	</ItemGroup>
+
 </Project>

@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36717.8 d17.14
+VisualStudioVersion = 17.14.36717.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAspDownloadFiles", "TestAspDownloadFiles\TestAspDownloadFiles.csproj", "{EF72CC1F-409E-464F-9E6A-E85149DA7CAB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAspDownloadFiles.Client", "TestAspDownloadFiles.Client\TestAspDownloadFiles.Client.csproj", "{A83DD0F5-5E0A-4B33-A9D4-ADE44E841545}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAspDownloadFiles.Models", "TestAspDownloadFiles.Models\TestAspDownloadFiles.Models.csproj", "{2983F8C3-6FFF-4360-91D3-18FF7A989B06}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{A83DD0F5-5E0A-4B33-A9D4-ADE44E841545}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A83DD0F5-5E0A-4B33-A9D4-ADE44E841545}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A83DD0F5-5E0A-4B33-A9D4-ADE44E841545}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2983F8C3-6FFF-4360-91D3-18FF7A989B06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2983F8C3-6FFF-4360-91D3-18FF7A989B06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2983F8C3-6FFF-4360-91D3-18FF7A989B06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2983F8C3-6FFF-4360-91D3-18FF7A989B06}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

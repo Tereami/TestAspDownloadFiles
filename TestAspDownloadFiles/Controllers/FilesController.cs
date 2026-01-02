@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using TestAspDownloadFiles.Models;
 
 
 namespace TestAspDownloadFiles.Controllers
@@ -57,6 +61,45 @@ namespace TestAspDownloadFiles.Controllers
                 "application/octet-stream",
                 filename,
                 true);
+        }
+
+        [HttpPost("upload")]
+        public async Task<IActionResult> Upload(IFormFile uploadedFile, [FromForm] string checksum)
+        {
+            if (uploadedFile == null || uploadedFile.Length == 0)
+                return BadRequest(new UploadResultDto(false, "No file"));
+
+            string tempFilesFolder = Path.Combine(_filesFolder, "Temp"); //Path.GetTempFileName();
+            if (!Directory.Exists(tempFilesFolder))
+                Directory.CreateDirectory(tempFilesFolder);
+            string tempFilePath = Path.Combine(tempFilesFolder, uploadedFile.FileName);
+
+            try
+            {
+                await using (FileStream fs = new FileStream(tempFilePath, FileMode.Create))
+                {
+                    await uploadedFile.CopyToAsync(fs);
+                }
+
+                string calculatedHashSum = await ChecksumCalculator.GetShs256(tempFilePath);
+                bool hashsumCheck = calculatedHashSum.Equals(checksum, StringComparison.OrdinalIgnoreCase);
+                if (!hashsumCheck)
+                    return BadRequest(new UploadResultDto(false, "Incorrect checksum"));
+
+                string destFilePath = Path.Combine(_filesFolder, uploadedFile.FileName);
+                System.IO.File.Move(tempFilePath, destFilePath);
+
+                return Ok(new UploadResultDto(true));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new UploadResultDto(false, ex.Message));
+            }
+            finally
+            {
+                if (System.IO.File.Exists(tempFilePath))
+                    System.IO.File.Delete(tempFilePath);
+            }
         }
     }
 }
