@@ -81,12 +81,16 @@ namespace TestAspDownloadFiles.Controllers
                     await uploadedFile.CopyToAsync(fs);
                 }
 
-                string calculatedHashSum = await ChecksumCalculator.GetShs256(tempFilePath);
+                string calculatedHashSum = await ChecksumCalculator.GetSha256(tempFilePath);
                 bool hashsumCheck = calculatedHashSum.Equals(checksum, StringComparison.OrdinalIgnoreCase);
                 if (!hashsumCheck)
                     return BadRequest(new UploadResultDto(false, "Incorrect checksum"));
 
                 string destFilePath = Path.Combine(_filesFolder, uploadedFile.FileName);
+
+                if (System.IO.File.Exists(destFilePath))
+                    destFilePath = Path.Combine(destFilePath + DateTime.Now.ToString("yyyy-MM-dd_HHmmss"));
+
                 System.IO.File.Move(tempFilePath, destFilePath);
 
                 return Ok(new UploadResultDto(true));

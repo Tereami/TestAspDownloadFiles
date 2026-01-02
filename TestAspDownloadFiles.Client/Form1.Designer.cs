@@ -43,6 +43,9 @@ namespace TestAspDownloadFiles.Client
             label2 = new Label();
             buttonConnect = new Button();
             buttonUpload = new Button();
+            progressBarUpload = new ProgressBar();
+            buttonUpload2 = new Button();
+            labelUploadProgress = new Label();
             SuspendLayout();
             // 
             // buttonGetFiles
@@ -92,7 +95,7 @@ namespace TestAspDownloadFiles.Client
             // 
             // buttonOpenFolder
             // 
-            buttonOpenFolder.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            buttonOpenFolder.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             buttonOpenFolder.Enabled = false;
             buttonOpenFolder.Location = new Point(12, 393);
             buttonOpenFolder.Name = "buttonOpenFolder";
@@ -121,7 +124,7 @@ namespace TestAspDownloadFiles.Client
             // 
             // labelSavedFilePath
             // 
-            labelSavedFilePath.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            labelSavedFilePath.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             labelSavedFilePath.Location = new Point(12, 306);
             labelSavedFilePath.Name = "labelSavedFilePath";
             labelSavedFilePath.Size = new Size(260, 84);
@@ -156,9 +159,9 @@ namespace TestAspDownloadFiles.Client
             // 
             // buttonUpload
             // 
-            buttonUpload.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            buttonUpload.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             buttonUpload.Enabled = false;
-            buttonUpload.Location = new Point(12, 439);
+            buttonUpload.Location = new Point(12, 435);
             buttonUpload.Name = "buttonUpload";
             buttonUpload.Size = new Size(260, 23);
             buttonUpload.TabIndex = 4;
@@ -166,25 +169,57 @@ namespace TestAspDownloadFiles.Client
             buttonUpload.UseVisualStyleBackColor = true;
             buttonUpload.Click += buttonUpload_Click;
             // 
+            // progressBarUpload
+            // 
+            progressBarUpload.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            progressBarUpload.Location = new Point(12, 493);
+            progressBarUpload.Name = "progressBarUpload";
+            progressBarUpload.Size = new Size(260, 23);
+            progressBarUpload.TabIndex = 5;
+            // 
+            // buttonUpload2
+            // 
+            buttonUpload2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            buttonUpload2.Enabled = false;
+            buttonUpload2.Location = new Point(12, 464);
+            buttonUpload2.Name = "buttonUpload2";
+            buttonUpload2.Size = new Size(260, 23);
+            buttonUpload2.TabIndex = 4;
+            buttonUpload2.Text = "Загрузить c отображением прогресса";
+            buttonUpload2.UseVisualStyleBackColor = true;
+            buttonUpload2.Click += buttonUpload2_Click;
+            // 
+            // labelUploadProgress
+            // 
+            labelUploadProgress.Location = new Point(12, 519);
+            labelUploadProgress.Name = "labelUploadProgress";
+            labelUploadProgress.Size = new Size(260, 46);
+            labelUploadProgress.TabIndex = 10;
+            labelUploadProgress.TextAlign = ContentAlignment.TopCenter;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(284, 504);
+            ClientSize = new Size(284, 581);
+            Controls.Add(labelUploadProgress);
             Controls.Add(buttonConnect);
             Controls.Add(label2);
             Controls.Add(textBoxUrl);
             Controls.Add(labelSavedFilePath);
             Controls.Add(labelDownloadProgress);
+            Controls.Add(progressBarUpload);
             Controls.Add(progressBarDownload);
+            Controls.Add(buttonUpload2);
             Controls.Add(buttonUpload);
             Controls.Add(buttonOpenFolder);
             Controls.Add(label1);
             Controls.Add(comboBoxFiles);
             Controls.Add(buttonDownload);
             Controls.Add(buttonGetFiles);
-            MaximumSize = new Size(540, 600);
-            MinimumSize = new Size(300, 350);
+            FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            MaximumSize = new Size(300, 620);
+            MinimumSize = new Size(300, 600);
             Name = "Form1";
             ShowIcon = false;
             StartPosition = FormStartPosition.CenterScreen;
@@ -207,5 +242,8 @@ namespace TestAspDownloadFiles.Client
         private Label label2;
         private Button buttonConnect;
         private Button buttonUpload;
+        private ProgressBar progressBarUpload;
+        private Button buttonUpload2;
+        private Label labelUploadProgress;
     }
 }

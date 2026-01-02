@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -12,6 +13,11 @@ namespace TestAspDownloadFiles
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.WebHost.ConfigureKestrel(opt =>
+            {
+                opt.Limits.MaxRequestBodySize = 1024L * 1021L * 1024L; //1Gb
+            });
 
             var app = builder.Build();
 
@@ -29,6 +35,13 @@ namespace TestAspDownloadFiles
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            app.Use(async (context, next) =>
+            {
+                //тут ставить breakpoint и отлаживать
+                var request = context.Request;
+                await next();
+            });
 
             app.Run();
         }

@@ -14,6 +14,7 @@ namespace TestAspDownloadFiles.Client
         private HttpClient _client;
         private string targetFolder = string.Empty;
         private string lastDownloadedFile = string.Empty;
+
         public Form1()
         {
             InitializeComponent();
@@ -27,6 +28,7 @@ namespace TestAspDownloadFiles.Client
             _client = new HttpClient() { BaseAddress = new Uri(url) };
             buttonGetFiles.Enabled = true;
             buttonUpload.Enabled = true;
+            buttonUpload2.Enabled = true;
         }
 
 
@@ -139,7 +141,7 @@ namespace TestAspDownloadFiles.Client
             System.Diagnostics.Process.Start("explorer.exe", argument);
         }
 
-        private void ProgressbarInstantValue(ProgressBar pb, int value)
+        private void ProgressbarInstantValue(System.Windows.Forms.ProgressBar pb, int value)
         {
             int valPlus1 = value + 1;
 
@@ -154,7 +156,6 @@ namespace TestAspDownloadFiles.Client
             {
                 pb.Value = valPlus1;
                 pb.Value = value;
-
             }
         }
 
@@ -177,11 +178,11 @@ namespace TestAspDownloadFiles.Client
 
         private async Task UploadFileAsync(string filePath)
         {
-            string checksum = await ChecksumCalculator.GetShs256(filePath);
+            string checksum = await ChecksumCalculator.GetSha256(filePath);
+            await using FileStream fs = File.OpenRead(filePath);
 
             using var content = new MultipartFormDataContent();
 
-            await using FileStream fs = File.OpenRead(filePath);
             StreamContent fileContent = new StreamContent(fs);
             fileContent.Headers.ContentType =
                 new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
@@ -196,6 +197,65 @@ namespace TestAspDownloadFiles.Client
 
             UploadResultDto? result = await response.Content.ReadFromJsonAsync<UploadResultDto>();
 
+            if (result == null)
+            {
+                throw new Exception($"Некорректный ответ сервера: {response.StatusCode}");
+            }
+            else
+            {
+                if (!result.Success)
+                    throw new Exception($"Ошибка: {result.Message}");
+            }
+        }
+
+        private async void buttonUpload2_Click(object sender, EventArgs e)
+        {
+            using OpenFileDialog ofd = new OpenFileDialog();
+            if (ofd.ShowDialog() != DialogResult.OK)
+                return;
+            labelUploadProgress.Text = "Подготовка...";
+            progressBarUpload.Value = 0;
+
+            await UploadFileWithProgressAsync(ofd.FileName);
+
+            ProgressbarInstantValue(progressBarUpload, 100);
+            labelUploadProgress.Text += "...Успешно!";
+        }
+
+        private async Task UploadFileWithProgressAsync(string filePath)
+        {
+            string checksum = await ChecksumCalculator.GetSha256(filePath);
+
+            await using var fs = File.OpenRead(filePath);
+            long totalBytes = fs.Length;
+            long totalKbytes = totalBytes / 1024;
+
+            ProgressableStreamContent progressContent = new ProgressableStreamContent(
+                fs,
+                totalBytes,
+                4096,
+                info =>
+                {
+                    BeginInvoke(() =>
+                    {
+                        ProgressbarInstantValue(progressBarUpload, info.Percent);
+                        labelUploadProgress.Text = $"Отправлено {info.LoadedKBytes} Кб из {totalKbytes} Кб\n{info.SpeedKbs:F0} Кб/сек";
+                    });
+                });
+
+            progressContent.Headers.ContentType =
+                new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+
+            using var form = new MultipartFormDataContent
+            {
+                { progressContent, "uploadedFile", Path.GetFileName(filePath) },
+                { new StringContent(checksum), "checksum" }
+            };
+
+            using var response = await _client.PostAsync("files/upload", form);
+            response.EnsureSuccessStatusCode();
+
+            UploadResultDto? result = await response.Content.ReadFromJsonAsync<UploadResultDto>();
             if (result == null)
             {
                 throw new Exception($"Некорректный ответ сервера: {response.StatusCode}");
