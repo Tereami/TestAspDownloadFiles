@@ -16,7 +16,7 @@ namespace TestAspDownloadFiles.Controllers
 
         public IActionResult Index()
         {
-            return View(res);
+            return View();
         }
 
         public IActionResult TestException()
