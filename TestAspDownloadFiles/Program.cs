@@ -22,10 +22,18 @@ namespace TestAspDownloadFiles
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
+            if (app.Environment.IsDevelopment())
+                app.UseDeveloperExceptionPage();
+            else
                 app.UseExceptionHandler("/Home/Error");
-            }
+
+            app.UseWhen(
+                context => !context.Request.Path.StartsWithSegments("/api"),
+                appBuilder =>
+                {
+                    appBuilder.UseStatusCodePagesWithReExecute("/Error/{0}");
+                });
+
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -38,10 +46,11 @@ namespace TestAspDownloadFiles
 
             app.Use(async (context, next) =>
             {
-                //тут ставить breakpoint и отлаживать
+                //тут ставить breakpoint для отладки входящих запросов
                 var request = context.Request;
                 await next();
             });
+
 
             app.Run();
         }

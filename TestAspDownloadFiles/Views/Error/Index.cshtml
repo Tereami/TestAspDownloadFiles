@@ -1,0 +1,13 @@
+﻿@model (int, string);
+@{
+    ViewData["Title"] = $"Error {Model.Item1}";
+}
+<div class="text-center">
+    <h1 class="display-4">Error @Model.Item1</h1>
+    <p>
+        @Model.Item2
+    </p>
+    <p>
+        <a asp-controller="Home" asp-action="Index">To main page</a>
+    </p>
+</div>

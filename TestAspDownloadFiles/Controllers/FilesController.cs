@@ -12,7 +12,7 @@ using TestAspDownloadFiles.Models;
 namespace TestAspDownloadFiles.Controllers
 {
     [ApiController]
-    [Route("files")]
+    [Route("api/files")]
     public class FilesController : Controller
     {
         private readonly string _filesFolder = string.Empty;

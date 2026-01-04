@@ -25,6 +25,7 @@ namespace TestAspDownloadFiles.Client
             string url = textBoxUrl.Text;
             if (!url.EndsWith("/"))
                 url += "/";
+            url += "api/";
             _client = new HttpClient() { BaseAddress = new Uri(url) };
             buttonGetFiles.Enabled = true;
             buttonUpload.Enabled = true;

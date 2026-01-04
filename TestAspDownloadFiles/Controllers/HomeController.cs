@@ -16,7 +16,22 @@ namespace TestAspDownloadFiles.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View(res);
+        }
+
+        public IActionResult TestException()
+        {
+            throw new System.Exception("NEW SAMPLE EXCEPTION");
+        }
+
+        public IActionResult TestUnauthorized()
+        {
+            return Unauthorized();
+        }
+
+        public IActionResult TestBadRequest()
+        {
+            return BadRequest();
         }
 
         public IActionResult Privacy()
